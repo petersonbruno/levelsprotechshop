@@ -34,9 +34,9 @@ const products: Product[] = [
     specs: ["Intel i5", "8GB RAM", "256GB SSD"],
     warranty: "3 Months",
     images: [
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8",
-      "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2",
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
+      "/image/product/laptop 05a.jpg",
+      "/image/product/laptop 05b.jpg",
+      "/image/product/laptop 05c.jpg",
     ],
   },
   {
@@ -47,9 +47,8 @@ const products: Product[] = [
     specs: ["Ryzen 5", "16GB RAM", "RTX 3060"],
     warranty: "6 Months",
     images: [
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45",
-      "https://images.unsplash.com/photo-1612197527276-8b07f5e55f43",
-      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04",
+      "/image/product/desktop 01a.jpg",
+      "/image/product/desktop 01b.jpg",
     ],
   },
   {
@@ -60,8 +59,97 @@ const products: Product[] = [
     specs: ["Intel i7", "16GB RAM", "512GB SSD"],
     warranty: "3 Months",
     images: [
-      "https://images.unsplash.com/photo-1587202372775-e229f172b9d1",
-      "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46",
+      "/image/product/moniter 01a.jpg",
+      "/image/product/moniter 01b.jpg",
+      "/image/product/moniter 01c.jpg",
+    ],
+  },
+  {
+    id: 4,
+    name: "Dell 3189 X360 Convertible",
+    category: "Laptops",
+    price: "330,000 TZS",
+    specs: ["RAM 4GB", "SSD 128GB", "Touch Screen", "X360 Convertible"],
+    warranty: "3 Months",
+    images: [
+      "/image/product/laptop 01a.jpg",
+      "/image/product/laptop 01b.jpg",
+      "/image/product/laptop 01c.jpg",
+    ],
+  },
+  {
+    id: 5,
+    name: "HP ProBook x360 11 G5 EE",
+    category: "Laptops",
+    price: "450,000 TZS",
+    specs: [
+      "Intel Pentium 5th Generation",
+      "11.6\" HD 1366 x 768 Pixels",
+      "RAM 8GB",
+      "SSD 256GB",
+      "Intel UHD Graphics 600",
+      "Touch Screen",
+    ],
+    warranty: "3 Months",
+    images: [
+      "/image/product/laptop 02a.jpg",
+      "/image/product/laptop 02b.jpg",
+      "/image/product/laptop 02c.jpg",
+    ],
+  },
+  {
+    id: 6,
+    name: "HP EliteBook 840 Aero",
+    category: "Laptops",
+    price: "900,000 TZS",
+    specs: [
+      "11th Gen Intel Core i5-1145G7 @2.61Ghz",
+      "16GB RAM",
+      "256GB SSD Storage",
+      "Fingerprint & Face ID",
+      "Keyboard Lights",
+      "14\" Display",
+      "Bang and Olufsen Speaker",
+    ],
+    warranty: "3 Months",
+    images: [
+      "/image/product/laptop 03a.jpg",
+      "/image/product/laptop 03b.jpg",
+      "/image/product/laptop 03c.jpg",
+    ],
+  },
+  {
+    id: 7,
+    name: "Canon Printer",
+    category: "Accessories",
+    price: "185,000 TZS",
+    specs: ["Copy", "Scan", "Print"],
+    warranty: "3 Months",
+    images: [
+      "/image/product/printer.jpg",
+      "/image/product/printer1.jpg",
+    ],
+  },
+  {
+    id: 8,
+    name: "HP ProBook 11 G5 EE Touch Screen",
+    category: "Laptops",
+    price: "360,000 TZS",
+    specs: [
+      "Intel Pentium Processor",
+      "11.5 inches Display",
+      "HDMI, WiFi, Keyboard, Battery",
+      "192GB SSD Storage",
+      "4GB RAM",
+      "Touch Screen",
+      "Refurbished",
+      "Includes Charger",
+    ],
+    warranty: "3 Months",
+    images: [
+      "/image/product/laptop 04a.jpg",
+      "/image/product/laptop 04b.jpg",
+      "/image/product/laptop 04c.jpg",
     ],
   },
 ];
@@ -121,7 +209,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-20 bg-neutral-950 border-b border-neutral-800">
         <div className="px-4 py-3">
-          <h1 className="text-lg font-semibold">LevelsProTech</h1>
+          <h1 className="text-lg font-semibold">ABDUL TECH SERVICES</h1>
           <div className="mt-3 flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded-2xl px-3 py-2">
             <Search className="w-4 h-4 text-neutral-400" />
             <input
@@ -192,7 +280,7 @@ export default function HomePage() {
       )}
 
       {/* Product Grid */}
-      <main className="flex-1 px-4 pb-24">
+      <main className="flex-1 px-4 pb-24 pt-4">
         {activeCategory === "All" && query === "" && (
           <div className="mb-4">
             <h2 className="text-base font-semibold mb-3">All Products</h2>
@@ -401,7 +489,7 @@ function ProfilePage({
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-green-700 mx-auto flex items-center justify-center">
             <User className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-2xl font-semibold">LevelsProTech</h1>
+          <h1 className="text-2xl font-semibold">ABDUL TECH SERVICES</h1>
           <p className="text-neutral-400">Your Trusted Tech Partner</p>
         </div>
 
