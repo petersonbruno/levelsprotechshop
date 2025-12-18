@@ -190,6 +190,11 @@ export default function HomePage() {
       <ProfilePage 
         onBack={() => setCurrentView("home")}
         onNavClick={(view) => setCurrentView(view)}
+        onCategoryChange={(category) => {
+          setActiveCategory(category);
+          setCurrentView("home");
+          setQuery("");
+        }}
       />
     );
   }
@@ -200,6 +205,11 @@ export default function HomePage() {
         product={selected} 
         onBack={handleBackToHome}
         onNavClick={(view) => setCurrentView(view)}
+        onCategoryChange={(category) => {
+          setActiveCategory(category);
+          setCurrentView("home");
+          setQuery("");
+        }}
       />
     );
   }
@@ -363,11 +373,13 @@ export default function HomePage() {
 function ProductDetails({ 
   product, 
   onBack,
-  onNavClick 
+  onNavClick,
+  onCategoryChange
 }: { 
   product: Product; 
   onBack: () => void;
   onNavClick: (view: View) => void;
+  onCategoryChange: (category: string) => void;
 }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -460,9 +472,30 @@ function ProductDetails({
               onNavClick("home");
             }}
           />
-          <Nav icon={<Laptop />} label="Laptops" />
-          <Nav icon={<Gamepad2 />} label="Gaming" />
-          <Nav icon={<ShoppingBag />} label="Shop" />
+          <Nav 
+            icon={<Laptop />} 
+            label="Laptops" 
+            onClick={() => {
+              onBack();
+              onCategoryChange("Laptops");
+            }}
+          />
+          <Nav 
+            icon={<Gamepad2 />} 
+            label="Gaming" 
+            onClick={() => {
+              onBack();
+              onCategoryChange("Gaming PCs");
+            }}
+          />
+          <Nav 
+            icon={<ShoppingBag />} 
+            label="Shop" 
+            onClick={() => {
+              onBack();
+              onCategoryChange("All");
+            }}
+          />
           <Nav 
             icon={<User />} 
             label="Profile" 
@@ -476,10 +509,12 @@ function ProductDetails({
 
 function ProfilePage({ 
   onBack,
-  onNavClick 
+  onNavClick,
+  onCategoryChange
 }: { 
   onBack: () => void;
   onNavClick: (view: View) => void;
+  onCategoryChange: (category: string) => void;
 }) {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
@@ -552,13 +587,35 @@ function ProfilePage({
               onNavClick("home");
             }}
           />
-          <Nav icon={<Laptop />} label="Laptops" />
-          <Nav icon={<Gamepad2 />} label="Gaming" />
-          <Nav icon={<ShoppingBag />} label="Shop" />
+          <Nav 
+            icon={<Laptop />} 
+            label="Laptops" 
+            onClick={() => {
+              onBack();
+              onCategoryChange("Laptops");
+            }}
+          />
+          <Nav 
+            icon={<Gamepad2 />} 
+            label="Gaming" 
+            onClick={() => {
+              onBack();
+              onCategoryChange("Gaming PCs");
+            }}
+          />
+          <Nav 
+            icon={<ShoppingBag />} 
+            label="Shop" 
+            onClick={() => {
+              onBack();
+              onCategoryChange("All");
+            }}
+          />
           <Nav 
             icon={<User />} 
             label="Profile" 
             active={true}
+            onClick={() => onNavClick("profile")}
           />
         </div>
       </nav>
