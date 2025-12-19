@@ -159,13 +159,14 @@ function waLink(p: Product) {
   return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
 }
 
-type View = "home" | "details" | "profile";
+type View = "home" | "shop" | "details" | "profile";
 
 export default function HomePage() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [selected, setSelected] = useState<Product | null>(null);
   const [currentView, setCurrentView] = useState<View>("home");
+  const [previousView, setPreviousView] = useState<View>("home");
 
   const popularProducts = products.slice(0, 3); // First 3 products as popular
 
@@ -177,13 +178,34 @@ export default function HomePage() {
 
   const handleProductClick = (product: Product) => {
     setSelected(product);
+    setPreviousView(currentView);
     setCurrentView("details");
   };
 
   const handleBackToHome = () => {
     setSelected(null);
-    setCurrentView("home");
+    setCurrentView(previousView);
   };
+
+  if (currentView === "shop") {
+    const shopFiltered = products.filter((p) => {
+      const matchCategory = activeCategory === "All" || p.category === activeCategory;
+      const matchQuery = p.name.toLowerCase().includes(query.toLowerCase());
+      return matchCategory && matchQuery;
+    });
+    
+    return (
+      <ShopPage
+        query={query}
+        setQuery={setQuery}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        filtered={shopFiltered}
+        onProductClick={handleProductClick}
+        onNavClick={(view) => setCurrentView(view)}
+      />
+    );
+  }
 
   if (currentView === "profile") {
     return (
@@ -204,10 +226,13 @@ export default function HomePage() {
       <ProductDetails 
         product={selected} 
         onBack={handleBackToHome}
-        onNavClick={(view) => setCurrentView(view)}
+        onNavClick={(view) => {
+          setCurrentView(view);
+          setPreviousView(view);
+        }}
         onCategoryChange={(category) => {
           setActiveCategory(category);
-          setCurrentView("home");
+          setCurrentView(previousView);
           setQuery("");
         }}
       />
@@ -219,7 +244,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-20 bg-neutral-950 border-b border-neutral-800">
         <div className="px-4 py-3">
-          <h1 className="text-lg font-semibold">ABDUL TECH SERVICES</h1>
+          <h1 className="text-lg font-semibold">LEVELS TECH SERVICES</h1>
           <div className="mt-3 flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded-2xl px-3 py-2">
             <Search className="w-4 h-4 text-neutral-400" />
             <input
@@ -325,14 +350,14 @@ export default function HomePage() {
 
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
-        <div className="grid grid-cols-5 py-2 text-xs text-neutral-400">
+        <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
           <Nav 
             icon={<Home />} 
             label="Home" 
             active={currentView === "home"}
             onClick={() => setCurrentView("home")}
           />
-          <Nav 
+          {/* <Nav 
             icon={<Laptop />} 
             label="Laptops" 
             onClick={() => {
@@ -349,13 +374,14 @@ export default function HomePage() {
               setCurrentView("home");
               setQuery("");
             }}
-          />
+          /> */}
           <Nav 
             icon={<ShoppingBag />} 
             label="Shop" 
+            active={false}
             onClick={() => {
               setActiveCategory("All");
-              setCurrentView("home");
+              setCurrentView("shop");
               setQuery("");
             }}
           />
@@ -463,7 +489,7 @@ function ProductDetails({
 
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
-        <div className="grid grid-cols-5 py-2 text-xs text-neutral-400">
+        <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
           <Nav 
             icon={<Home />} 
             label="Home" 
@@ -472,7 +498,7 @@ function ProductDetails({
               onNavClick("home");
             }}
           />
-          <Nav 
+          {/* <Nav 
             icon={<Laptop />} 
             label="Laptops" 
             onClick={() => {
@@ -487,14 +513,141 @@ function ProductDetails({
               onBack();
               onCategoryChange("Gaming PCs");
             }}
+          /> */}
+          <Nav 
+            icon={<ShoppingBag />} 
+            label="Shop" 
+            active={true}
+            onClick={() => {
+              onBack();
+              onCategoryChange("All");
+              onNavClick("shop");
+            }}
+          />
+          <Nav 
+            icon={<User />} 
+            label="Profile" 
+            onClick={() => onNavClick("profile")}
+          />
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+function ShopPage({
+  query,
+  setQuery,
+  activeCategory,
+  setActiveCategory,
+  filtered,
+  onProductClick,
+  onNavClick
+}: {
+  query: string;
+  setQuery: (query: string) => void;
+  activeCategory: string;
+  setActiveCategory: (category: string) => void;
+  filtered: Product[];
+  onProductClick: (product: Product) => void;
+  onNavClick: (view: View) => void;
+}) {
+  return (
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
+      {/* Header - without LEVELS TECH SERVICES heading */}
+      <header className="sticky top-0 z-20 bg-neutral-950 border-b border-neutral-800">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded-2xl px-3 py-2">
+            <Search className="w-4 h-4 text-neutral-400" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search laptops, gaming PC..."
+              className="bg-transparent text-sm flex-1 outline-none"
+            />
+          </div>
+        </div>
+      </header>
+
+      {/* Categories */}
+      <div className="px-4 py-3 flex gap-2 overflow-x-auto">
+        {categories.map((category) => {
+          const Icon = category.icon;
+          const isActive = activeCategory === category.name;
+          return (
+            <button
+              key={category.name}
+              onClick={() => setActiveCategory(category.name)}
+              className={`shrink-0 rounded-2xl px-4 py-2 text-xs border flex items-center gap-2 ${
+                isActive
+                  ? "bg-green-600 border-green-600 text-white"
+                  : "border-neutral-800 text-neutral-400"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{category.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Product Grid - All Products */}
+      <main className="flex-1 px-4 pb-24 pt-4">
+        <div className="mb-4">
+          <h2 className="text-base font-semibold mb-3">
+            {query 
+              ? `Search Results (${filtered.length})` 
+              : activeCategory === "All" 
+                ? "All Products" 
+                : `${activeCategory} (${filtered.length})`}
+          </h2>
+        </div>
+        {filtered.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-neutral-400">No products found</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {filtered.map((p) => (
+              <motion.div
+                key={p.id}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => onProductClick(p)}
+                className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden cursor-pointer"
+              >
+                <div className="relative h-28 w-full">
+                  <Image
+                    src={p.images[0]}
+                    alt={p.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-sm font-medium line-clamp-2">{p.name}</h3>
+                  <p className="text-xs text-neutral-400 mt-1">{p.category}</p>
+                  <p className="text-sm font-semibold mt-2">{p.price}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      {/* Bottom Nav */}
+      <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
+        <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
+          <Nav 
+            icon={<Home />} 
+            label="Home" 
+            onClick={() => onNavClick("home")}
           />
           <Nav 
             icon={<ShoppingBag />} 
             label="Shop" 
-            onClick={() => {
-              onBack();
-              onCategoryChange("All");
-            }}
+            active={true}
+            onClick={() => onNavClick("shop")}
           />
           <Nav 
             icon={<User />} 
@@ -524,7 +677,7 @@ function ProfilePage({
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-green-700 mx-auto flex items-center justify-center">
             <User className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-2xl font-semibold">ABDUL TECH SERVICES</h1>
+          <h1 className="text-2xl font-semibold">LEVELSPROTECH SHOP</h1>
           <p className="text-neutral-400">Your Trusted Tech Partner</p>
         </div>
 
@@ -561,7 +714,7 @@ function ProfilePage({
             </div>
             <div className="flex-1">
               <p className="text-sm text-neutral-400">Location</p>
-              <p className="text-sm font-medium">Dar es Salaam, Tanzania</p>
+              <p className="text-sm font-medium">Morogoro-Msamvu, Tanzania</p>
             </div>
           </div>
         </div>
@@ -578,7 +731,7 @@ function ProfilePage({
 
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
-        <div className="grid grid-cols-5 py-2 text-xs text-neutral-400">
+        <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
           <Nav 
             icon={<Home />} 
             label="Home" 
@@ -587,7 +740,7 @@ function ProfilePage({
               onNavClick("home");
             }}
           />
-          <Nav 
+          {/* <Nav 
             icon={<Laptop />} 
             label="Laptops" 
             onClick={() => {
@@ -602,13 +755,15 @@ function ProfilePage({
               onBack();
               onCategoryChange("Gaming PCs");
             }}
-          />
+          /> */}
           <Nav 
             icon={<ShoppingBag />} 
             label="Shop" 
+            active={true}
             onClick={() => {
               onBack();
               onCategoryChange("All");
+              onNavClick("shop");
             }}
           />
           <Nav 
