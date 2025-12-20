@@ -1,4 +1,27 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://sabinabruno.pythonanywhere.com/";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/";
+
+// Helper function to get auth headers
+function getAuthHeaders(includeContentType: boolean = true): HeadersInit {
+  const token = typeof window !== "undefined" ? localStorage.getItem("levelsproshop_auth") : null;
+  const headers: HeadersInit = {};
+  
+  if (includeContentType) {
+    headers["Content-Type"] = "application/json";
+  }
+  
+  if (token) {
+    try {
+      const authData = JSON.parse(token);
+      if (authData.token) {
+        headers["Authorization"] = `Token ${authData.token}`;
+      }
+    } catch (e) {
+      // Invalid token format, ignore
+    }
+  }
+  
+  return headers;
+}
 
 // Normalize image URL - converts relative URLs to absolute URLs
 export function normalizeImageUrl(url: string | undefined | null): string {
@@ -55,6 +78,7 @@ export async function fetchProducts(params?: {
   limit?: number;
   offset?: number;
   sort?: string;
+  trending?: boolean;
 }): Promise<ApiProduct[]> {
   try {
     const queryParams = new URLSearchParams();
@@ -63,8 +87,9 @@ export async function fetchProducts(params?: {
     if (params?.limit) queryParams.append("limit", params.limit.toString());
     if (params?.offset) queryParams.append("offset", params.offset.toString());
     if (params?.sort) queryParams.append("sort", params.sort);
+    if (params?.trending !== undefined) queryParams.append("trending", params.trending ? "true" : "false");
 
-    const url = `${API_BASE_URL}/api/products/${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    const url = `${API_BASE_URL}api/products/${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -87,7 +112,7 @@ export async function fetchProducts(params?: {
 // Fetch a single product by ID
 export async function fetchProduct(id: string): Promise<ApiProduct> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/products/${id}/`);
+    const response = await fetch(`${API_BASE_URL}api/products/${id}/`);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch product: ${response.statusText}`);
@@ -136,11 +161,9 @@ export async function createProduct(product: {
         images_data: product.images_data,
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/products/`, {
+      const response = await fetch(`${API_BASE_URL}api/products/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(jsonBody),
       });
 
@@ -188,11 +211,9 @@ export async function updateProduct(
         images_data: product.images_data,
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/products/${id}/`, {
+      const response = await fetch(`${API_BASE_URL}api/products/${id}/`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(jsonBody),
       });
 
@@ -220,8 +241,9 @@ export async function updateProduct(
 // Delete a product
 export async function deleteProduct(id: string): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/products/${id}/`, {
+    const response = await fetch(`${API_BASE_URL}api/products/${id}/`, {
       method: "DELETE",
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
@@ -230,6 +252,47 @@ export async function deleteProduct(id: string): Promise<void> {
     }
   } catch (error) {
     console.error("Error deleting product:", error);
+    throw error;
+  }
+}
+
+// Fetch dashboard products (products created by the authenticated user)
+export async function fetchDashboard(params?: {
+  category?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+  sort?: string;
+}): Promise<ApiProduct[]> {
+  try {
+    const queryParams = new URLSearchParams();
+    if (params?.category) queryParams.append("category", params.category);
+    if (params?.search) queryParams.append("search", params.search);
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.offset) queryParams.append("offset", params.offset.toString());
+    if (params?.sort) queryParams.append("sort", params.sort);
+
+    const url = `${API_BASE_URL}api/dashboard/${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    const response = await fetch(url, {
+      headers: getAuthHeaders(false),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Authentication required. Please login again.");
+      }
+      throw new Error(`Failed to fetch dashboard: ${response.statusText}`);
+    }
+
+    const data: ApiResponse<ProductsListResponse> = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.error || "Failed to fetch dashboard");
+    }
+
+    return data.data.products;
+  } catch (error) {
+    console.error("Error fetching dashboard:", error);
     throw error;
   }
 }
