@@ -79,15 +79,15 @@ export default function HomePage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Fetch all products
         const fetchedProducts = await fetchProducts();
         setProducts(fetchedProducts);
-        
+
         // Fetch trending products (up to 6)
-        const trendingProducts = await fetchProducts({ 
-          trending: true, 
-          limit: 6 
+        const trendingProducts = await fetchProducts({
+          trending: true,
+          limit: 6
         });
         setPopularProducts(trendingProducts);
       } catch (err) {
@@ -137,7 +137,7 @@ export default function HomePage() {
       const matchQuery = p.name.toLowerCase().includes(query.toLowerCase());
       return matchCategory && matchQuery;
     });
-    
+
     return (
       <ShopPage
         query={query}
@@ -184,7 +184,7 @@ export default function HomePage() {
 
   if (currentView === "profile") {
     return (
-      <ProfilePage 
+      <ProfilePage
         onBack={() => setCurrentView("home")}
         onNavClick={(view) => setCurrentView(view)}
         onCategoryChange={(category) => {
@@ -198,8 +198,8 @@ export default function HomePage() {
 
   if (currentView === "details" && selected) {
     return (
-      <ProductDetails 
-        product={selected} 
+      <ProductDetails
+        product={selected}
         onBack={handleBackToHome}
         onNavClick={(view) => {
           setCurrentView(view);
@@ -241,11 +241,10 @@ export default function HomePage() {
             <button
               key={category.name}
               onClick={() => setActiveCategory(category.name)}
-              className={`shrink-0 rounded-2xl px-4 py-2 text-xs border flex items-center gap-2 ${
-                isActive
-                  ? "bg-green-600 border-green-600 text-white"
-                  : "border-neutral-800 text-neutral-400"
-              }`}
+              className={`shrink-0 rounded-2xl px-4 py-2 text-xs border flex items-center gap-2 ${isActive
+                ? "bg-green-600 border-green-600 text-white"
+                : "border-neutral-800 text-neutral-400"
+                }`}
             >
               <Icon className="w-4 h-4" />
               <span>{category.name}</span>
@@ -340,23 +339,23 @@ export default function HomePage() {
                   onClick={() => handleProductClick(p)}
                   className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden cursor-pointer"
                 >
-                <div className="relative h-28 w-full">
-                  {p.image_urls && p.image_urls.length > 0 ? (
-                    <Image
-                      src={normalizeImageUrl(p.image_urls[0])}
-                      alt={p.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                      unoptimized={shouldUnoptimizeImage(p.image_urls[0])}
-                      onError={handleImageError}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
-                      <ImageIcon className="w-8 h-8 text-neutral-600" />
-                    </div>
-                  )}
-                </div>
+                  <div className="relative h-28 w-full">
+                    {p.image_urls && p.image_urls.length > 0 ? (
+                      <Image
+                        src={normalizeImageUrl(p.image_urls[0])}
+                        alt={p.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, 33vw"
+                        unoptimized={shouldUnoptimizeImage(p.image_urls[0])}
+                        onError={handleImageError}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
+                        <ImageIcon className="w-8 h-8 text-neutral-600" />
+                      </div>
+                    )}
+                  </div>
                   <div className="p-3">
                     <h3 className="text-sm font-medium line-clamp-2">{p.name}</h3>
                     <p className="text-xs text-neutral-400 mt-1">{p.category}</p>
@@ -372,9 +371,9 @@ export default function HomePage() {
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
         <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-          <Nav 
-            icon={<Home />} 
-            label="Home" 
+          <Nav
+            icon={<Home />}
+            label="Home"
             active={currentView === "home"}
             onClick={() => setCurrentView("home")}
           />
@@ -396,9 +395,9 @@ export default function HomePage() {
               setQuery("");
             }}
           /> */}
-          <Nav 
-            icon={<ShoppingBag />} 
-            label="Shop" 
+          <Nav
+            icon={<ShoppingBag />}
+            label="Shop"
             active={false}
             onClick={() => {
               setActiveCategory("All");
@@ -406,9 +405,9 @@ export default function HomePage() {
               setQuery("");
             }}
           />
-          <Nav 
-            icon={<User />} 
-            label="Profile" 
+          <Nav
+            icon={<User />}
+            label="Profile"
             active={false}
             onClick={() => setCurrentView("profile")}
           />
@@ -418,13 +417,13 @@ export default function HomePage() {
   );
 }
 
-function ProductDetails({ 
-  product, 
+function ProductDetails({
+  product,
   onBack,
   onNavClick,
   onCategoryChange
-}: { 
-  product: Product; 
+}: {
+  product: Product;
   onBack: () => void;
   onNavClick: (view: View) => void;
   onCategoryChange: (category: string) => void;
@@ -464,7 +463,7 @@ function ProductDetails({
       <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full px-4 pb-24">
         {/* Image Carousel */}
         <div className="w-full mb-6">
-          <div 
+          <div
             className="relative w-full h-80 rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-pointer"
             onClick={handleImageClick}
           >
@@ -484,7 +483,7 @@ function ProductDetails({
               </div>
             )}
           </div>
-          
+
           {/* Image Thumbnails */}
           {product.image_urls && product.image_urls.length > 1 && (
             <div className="flex gap-2 mt-4 overflow-x-auto">
@@ -492,11 +491,10 @@ function ProductDetails({
                 <button
                   key={i}
                   onClick={() => setCurrentImageIndex(i)}
-                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
-                    currentImageIndex === i
-                      ? "border-green-600"
-                      : "border-neutral-800"
-                  }`}
+                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 ${currentImageIndex === i
+                    ? "border-green-600"
+                    : "border-neutral-800"
+                    }`}
                 >
                   <Image
                     src={normalizeImageUrl(img)}
@@ -549,7 +547,7 @@ function ProductDetails({
 
       {/* Full Screen Image Viewer */}
       {isFullScreen && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/95 flex flex-col"
           onClick={handleCloseFullScreen}
         >
@@ -574,7 +572,7 @@ function ProductDetails({
             )}
 
             {/* Image */}
-            <div 
+            <div
               className="relative w-full h-full max-w-4xl max-h-[70vh]"
               onClick={(e) => e.stopPropagation()}
             >
@@ -616,9 +614,8 @@ function ProductDetails({
                     e.stopPropagation();
                     setCurrentImageIndex(i);
                   }}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    currentImageIndex === i ? "bg-green-500" : "bg-neutral-600"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-colors ${currentImageIndex === i ? "bg-green-500" : "bg-neutral-600"
+                    }`}
                 />
               ))}
             </div>
@@ -641,9 +638,9 @@ function ProductDetails({
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
         <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-          <Nav 
-            icon={<Home />} 
-            label="Home" 
+          <Nav
+            icon={<Home />}
+            label="Home"
             onClick={() => {
               onBack();
               onNavClick("home");
@@ -665,9 +662,9 @@ function ProductDetails({
               onCategoryChange("Gaming PCs");
             }}
           /> */}
-          <Nav 
-            icon={<ShoppingBag />} 
-            label="Shop" 
+          <Nav
+            icon={<ShoppingBag />}
+            label="Shop"
             active={false}
             onClick={() => {
               onBack();
@@ -675,9 +672,9 @@ function ProductDetails({
               onNavClick("shop");
             }}
           />
-          <Nav 
-            icon={<User />} 
-            label="Profile" 
+          <Nav
+            icon={<User />}
+            label="Profile"
             active={false}
             onClick={() => onNavClick("profile")}
           />
@@ -730,11 +727,10 @@ function ShopPage({
             <button
               key={category.name}
               onClick={() => setActiveCategory(category.name)}
-              className={`shrink-0 rounded-2xl px-4 py-2 text-xs border flex items-center gap-2 ${
-                isActive
-                  ? "bg-green-600 border-green-600 text-white"
-                  : "border-neutral-800 text-neutral-400"
-              }`}
+              className={`shrink-0 rounded-2xl px-4 py-2 text-xs border flex items-center gap-2 ${isActive
+                ? "bg-green-600 border-green-600 text-white"
+                : "border-neutral-800 text-neutral-400"
+                }`}
             >
               <Icon className="w-4 h-4" />
               <span>{category.name}</span>
@@ -747,10 +743,10 @@ function ShopPage({
       <main className="flex-1 px-4 pb-24 pt-4">
         <div className="mb-4">
           <h2 className="text-base font-semibold mb-3">
-            {query 
-              ? `Search Results (${filtered.length})` 
-              : activeCategory === "All" 
-                ? "All Products" 
+            {query
+              ? `Search Results (${filtered.length})`
+              : activeCategory === "All"
+                ? "All Products"
                 : `${activeCategory} (${filtered.length})`}
           </h2>
         </div>
@@ -798,20 +794,20 @@ function ShopPage({
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
         <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-          <Nav 
-            icon={<Home />} 
-            label="Home" 
+          <Nav
+            icon={<Home />}
+            label="Home"
             onClick={() => onNavClick("home")}
           />
-          <Nav 
-            icon={<ShoppingBag />} 
-            label="Shop" 
+          <Nav
+            icon={<ShoppingBag />}
+            label="Shop"
             active={true}
             onClick={() => onNavClick("shop")}
           />
-          <Nav 
-            icon={<User />} 
-            label="Profile" 
+          <Nav
+            icon={<User />}
+            label="Profile"
             active={false}
             onClick={() => onNavClick("profile")}
           />
@@ -918,20 +914,20 @@ function LoginPage({
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
         <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-          <Nav 
-            icon={<Home />} 
-            label="Home" 
+          <Nav
+            icon={<Home />}
+            label="Home"
             onClick={() => onBack()}
           />
-          <Nav 
-            icon={<ShoppingBag />} 
-            label="Shop" 
+          <Nav
+            icon={<ShoppingBag />}
+            label="Shop"
             active={false}
             onClick={() => onBack()}
           />
-          <Nav 
-            icon={<User />} 
-            label="Profile" 
+          <Nav
+            icon={<User />}
+            label="Profile"
             active={false}
             onClick={() => onBack()}
           />
@@ -941,11 +937,11 @@ function LoginPage({
   );
 }
 
-function ProfilePage({ 
+function ProfilePage({
   onBack,
   onNavClick,
   onCategoryChange
-}: { 
+}: {
   onBack: () => void;
   onNavClick: (view: View) => void;
   onCategoryChange: (category: string) => void;
@@ -1004,7 +1000,7 @@ function ProfilePage({
             </div>
             <div className="flex-1">
               <p className="text-sm text-neutral-400">Location</p>
-              <p className="text-sm font-medium">Morogoro-Msamvu, Tanzania</p>
+              <p className="text-sm font-medium">Msamvu and SUA-Getini-Morogoro, Tanzania</p>
             </div>
           </div>
         </div>
@@ -1013,8 +1009,16 @@ function ProfilePage({
         <div className="w-full mt-8 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
           <h2 className="text-sm font-semibold mb-2">About Us</h2>
           <p className="text-sm text-neutral-400 leading-relaxed">
-            We specialize in providing high-quality laptops, desktops, gaming PCs, and tech accessories. 
-            All products come with warranty and excellent customer support.
+            Pata laptops, desktops, gaming PCs na accessories bora kwa bei nafuu. Tunauza bidhaa halisi zenye ubora wa uhakika na tunakuhudumia kwa haraka na uaminifu — iwe ni kwa kazi, masomo au gaming.
+<br />
+            <br />
+            🚚 Free delivery ndani ya Morogoro
+            <br />
+            <br />
+            🚚 Delivery mikoa yote kwa gharama nafuu
+            <br />
+            <br />
+            Agiza tu, sisi tunakuletea hadi ulipo bila usumbufu.
           </p>
         </div>
       </div>
@@ -1022,9 +1026,9 @@ function ProfilePage({
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
         <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-          <Nav 
-            icon={<Home />} 
-            label="Home" 
+          <Nav
+            icon={<Home />}
+            label="Home"
             onClick={() => {
               onBack();
               onNavClick("home");
@@ -1046,9 +1050,9 @@ function ProfilePage({
               onCategoryChange("Gaming PCs");
             }}
           /> */}
-          <Nav 
-            icon={<ShoppingBag />} 
-            label="Shop" 
+          <Nav
+            icon={<ShoppingBag />}
+            label="Shop"
             active={false}
             onClick={() => {
               onBack();
@@ -1056,9 +1060,9 @@ function ProfilePage({
               onNavClick("shop");
             }}
           />
-          <Nav 
-            icon={<User />} 
-            label="Profile" 
+          <Nav
+            icon={<User />}
+            label="Profile"
             active={true}
             onClick={() => onNavClick("profile")}
           />
@@ -1119,7 +1123,7 @@ function DashboardPage({
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError(null);
-    
+
     if (!formData.name || !formData.price) {
       setSubmitError("Please fill in all required fields (name, price)");
       return;
@@ -1134,7 +1138,7 @@ function DashboardPage({
 
     try {
       setIsSubmitting(true);
-      
+
       // Extract base64 images (those starting with data:)
       const imagesData = validImages
         .filter(img => img.startsWith('data:'))
@@ -1157,7 +1161,7 @@ function DashboardPage({
         specs: formData.specs.filter(s => s.trim() !== ""),
         images_data: imagesData,
       });
-      
+
       // Reset form
       setFormData({
         name: "",
@@ -1167,13 +1171,13 @@ function DashboardPage({
         specs: [""],
         images: [""],
       });
-      
+
       // Refresh products list
       await refreshDashboard();
-      
+
       // Go back to main dashboard view
       setDashboardSubView("main");
-      
+
       alert("Product added successfully!");
     } catch (error) {
       console.error("Error adding product:", error);
@@ -1334,33 +1338,33 @@ function DashboardPage({
                     <h2 className="text-xl font-semibold mb-4">Recent Products</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {recentProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="bg-neutral-800 border border-neutral-700 rounded-xl overflow-hidden hover:border-green-600 transition-colors"
-                    >
-                      <div className="relative h-48 w-full bg-neutral-800">
-                        {product.image_urls && product.image_urls.length > 0 ? (
-                          <Image
-                            src={normalizeImageUrl(product.image_urls[0])}
-                            alt={product.name}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            unoptimized={shouldUnoptimizeImage(product.image_urls[0])}
-                            onError={handleImageError}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-neutral-700">
-                            <ImageIcon className="w-12 h-12 text-neutral-500" />
+                        <div
+                          key={product.id}
+                          className="bg-neutral-800 border border-neutral-700 rounded-xl overflow-hidden hover:border-green-600 transition-colors"
+                        >
+                          <div className="relative h-48 w-full bg-neutral-800">
+                            {product.image_urls && product.image_urls.length > 0 ? (
+                              <Image
+                                src={normalizeImageUrl(product.image_urls[0])}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                unoptimized={shouldUnoptimizeImage(product.image_urls[0])}
+                                onError={handleImageError}
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-neutral-700">
+                                <ImageIcon className="w-12 h-12 text-neutral-500" />
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-semibold text-lg mb-1 line-clamp-1">{product.name}</h3>
-                        <p className="text-sm text-neutral-400 mb-2">{product.category}</p>
-                        <p className="text-green-500 font-medium">{product.price}</p>
-                      </div>
-                    </div>
+                          <div className="p-4">
+                            <h3 className="font-semibold text-lg mb-1 line-clamp-1">{product.name}</h3>
+                            <p className="text-sm text-neutral-400 mb-2">{product.category}</p>
+                            <p className="text-green-500 font-medium">{product.price}</p>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -1373,20 +1377,20 @@ function DashboardPage({
         {/* Bottom Nav */}
         <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
           <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-            <Nav 
-              icon={<Home />} 
-              label="Home" 
+            <Nav
+              icon={<Home />}
+              label="Home"
               onClick={() => onNavClick("home")}
             />
-            <Nav 
-              icon={<ShoppingBag />} 
-              label="Shop" 
+            <Nav
+              icon={<ShoppingBag />}
+              label="Shop"
               active={false}
               onClick={() => onNavClick("shop")}
             />
-            <Nav 
-              icon={<User />} 
-              label="Profile" 
+            <Nav
+              icon={<User />}
+              label="Profile"
               active={false}
               onClick={() => {
                 setDashboardSubView("main");
@@ -1426,7 +1430,7 @@ function DashboardPage({
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">All Products ({products.length})</h2>
               </div>
-              
+
               {loading ? (
                 <div className="text-center py-12 text-neutral-400">
                   <p>Loading products...</p>
@@ -1501,175 +1505,175 @@ function DashboardPage({
                   Add New Product
                 </h2>
               </div>
-            
-            <form onSubmit={handleAddProduct} className="space-y-4">
-              {submitError && (
-                <div className="bg-red-900/50 border border-red-600 rounded-xl p-3 text-sm text-red-300">
-                  {submitError}
-                </div>
-              )}
-              
-              {/* Product Name */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Product Name *</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
 
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Category *</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
-                  required
-                >
-                  {categories.filter(c => c.name !== "All").map(cat => (
-                    <option key={cat.name} value={cat.name}>{cat.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Price */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Price *</label>
-                <input
-                  type="text"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="e.g., 950,000 TZS"
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
-                  required
-                />
-              </div>
-
-              {/* Warranty */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Warranty</label>
-                <input
-                  type="text"
-                  value={formData.warranty}
-                  onChange={(e) => setFormData({ ...formData, warranty: e.target.value })}
-                  placeholder="e.g., 3 Months"
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
-                />
-              </div>
-
-              {/* Specifications */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Specifications</label>
-                {formData.specs.map((spec, index) => (
-                  <div key={index} className="flex gap-2 mb-2">
-                    <input
-                      type="text"
-                      value={spec}
-                      onChange={(e) => updateSpec(index, e.target.value)}
-                      placeholder={`Spec ${index + 1}`}
-                      className="flex-1 bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
-                    />
-                    {formData.specs.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeSpecField(index)}
-                        className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-xl"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    )}
+              <form onSubmit={handleAddProduct} className="space-y-4">
+                {submitError && (
+                  <div className="bg-red-900/50 border border-red-600 rounded-xl p-3 text-sm text-red-300">
+                    {submitError}
                   </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addSpecField}
-                  className="text-sm text-green-500 hover:text-green-400"
-                >
-                  + Add Specification
-                </button>
-              </div>
+                )}
 
-              {/* Images */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Images *</label>
-                {formData.images.map((image, index) => (
-                  <div key={index} className="mb-4 space-y-2">
-                    <div className="flex gap-2">
-                      {/* File Upload */}
-                      <label className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer transition-colors flex-1">
-                        <Upload className="w-4 h-4" />
-                        <span className="text-sm font-medium">Upload Image</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0] || null;
-                            handleImageUpload(index, file);
-                          }}
-                          className="hidden"
-                          disabled={isSubmitting}
-                        />
-                      </label>
-                      
-                      {formData.images.length > 1 && (
+                {/* Product Name */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Product Name *</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Category *</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
+                    required
+                  >
+                    {categories.filter(c => c.name !== "All").map(cat => (
+                      <option key={cat.name} value={cat.name}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Price */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Price *</label>
+                  <input
+                    type="text"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    placeholder="e.g., 950,000 TZS"
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
+                    required
+                  />
+                </div>
+
+                {/* Warranty */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Warranty</label>
+                  <input
+                    type="text"
+                    value={formData.warranty}
+                    onChange={(e) => setFormData({ ...formData, warranty: e.target.value })}
+                    placeholder="e.g., 3 Months"
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
+                  />
+                </div>
+
+                {/* Specifications */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Specifications</label>
+                  {formData.specs.map((spec, index) => (
+                    <div key={index} className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        value={spec}
+                        onChange={(e) => updateSpec(index, e.target.value)}
+                        placeholder={`Spec ${index + 1}`}
+                        className="flex-1 bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-2 outline-none focus:border-green-500"
+                      />
+                      {formData.specs.length > 1 && (
                         <button
                           type="button"
-                          onClick={() => removeImageField(index)}
+                          onClick={() => removeSpecField(index)}
                           className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-xl"
-                          disabled={isSubmitting}
                         >
                           <X className="w-4 h-4" />
                         </button>
                       )}
                     </div>
-                    
-                    {/* Image Preview */}
-                    {image && (
-                      <div className="relative w-full h-32 rounded-xl overflow-hidden bg-neutral-800 border border-neutral-700">
-                        {image.startsWith('data:') || image.startsWith('http') || image.startsWith('/') ? (
-                          <Image
-                            src={image}
-                            alt={`Preview ${index + 1}`}
-                            fill
-                            className="object-contain"
-                            sizes="(max-width: 768px) 100vw, 400px"
-                            unoptimized={shouldUnoptimizeImage(image)}
-                            onError={handleImageError}
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addSpecField}
+                    className="text-sm text-green-500 hover:text-green-400"
+                  >
+                    + Add Specification
+                  </button>
+                </div>
+
+                {/* Images */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Images *</label>
+                  {formData.images.map((image, index) => (
+                    <div key={index} className="mb-4 space-y-2">
+                      <div className="flex gap-2">
+                        {/* File Upload */}
+                        <label className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer transition-colors flex-1">
+                          <Upload className="w-4 h-4" />
+                          <span className="text-sm font-medium">Upload Image</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null;
+                              handleImageUpload(index, file);
+                            }}
+                            className="hidden"
+                            disabled={isSubmitting}
                           />
-                        ) : (
-                          <div className="flex items-center justify-center h-full text-neutral-400">
-                            <ImageIcon className="w-8 h-8" />
-                          </div>
+                        </label>
+
+                        {formData.images.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeImageField(index)}
+                            className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-xl"
+                            disabled={isSubmitting}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         )}
                       </div>
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addImageField}
-                  className="text-sm text-green-500 hover:text-green-400 flex items-center gap-1"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Another Image
-                </button>
-              </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
-              >
-                {isSubmitting ? "Adding..." : "Add Product"}
-              </button>
-            </form>
-          </div>
+                      {/* Image Preview */}
+                      {image && (
+                        <div className="relative w-full h-32 rounded-xl overflow-hidden bg-neutral-800 border border-neutral-700">
+                          {image.startsWith('data:') || image.startsWith('http') || image.startsWith('/') ? (
+                            <Image
+                              src={image}
+                              alt={`Preview ${index + 1}`}
+                              fill
+                              className="object-contain"
+                              sizes="(max-width: 768px) 100vw, 400px"
+                              unoptimized={shouldUnoptimizeImage(image)}
+                              onError={handleImageError}
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-neutral-400">
+                              <ImageIcon className="w-8 h-8" />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addImageField}
+                    className="text-sm text-green-500 hover:text-green-400 flex items-center gap-1"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Another Image
+                  </button>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isSubmitting ? "Adding..." : "Add Product"}
+                </button>
+              </form>
+            </div>
           )}
         </div>
       </div>
@@ -1677,20 +1681,20 @@ function DashboardPage({
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 inset-x-0 bg-neutral-950 border-t border-neutral-800">
         <div className="grid grid-cols-3 py-2 text-xs text-neutral-400">
-          <Nav 
-            icon={<Home />} 
-            label="Home" 
+          <Nav
+            icon={<Home />}
+            label="Home"
             onClick={() => onNavClick("home")}
           />
-          <Nav 
-            icon={<ShoppingBag />} 
-            label="Shop" 
+          <Nav
+            icon={<ShoppingBag />}
+            label="Shop"
             active={false}
             onClick={() => onNavClick("shop")}
           />
-          <Nav 
-            icon={<User />} 
-            label="Profile" 
+          <Nav
+            icon={<User />}
+            label="Profile"
             active={false}
             onClick={() => {
               setDashboardSubView("main");
@@ -1704,13 +1708,13 @@ function DashboardPage({
   );
 }
 
-function Nav({ 
-  icon, 
-  label, 
+function Nav({
+  icon,
+  label,
   active = false,
-  onClick 
-}: { 
-  icon: React.ReactNode; 
+  onClick
+}: {
+  icon: React.ReactNode;
   label: string;
   active?: boolean;
   onClick?: () => void;
@@ -1718,9 +1722,8 @@ function Nav({
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 transition-colors ${
-        active ? "text-green-500" : "text-neutral-400"
-      }`}
+      className={`flex flex-col items-center gap-1 transition-colors ${active ? "text-green-500" : "text-neutral-400"
+        }`}
     >
       <div className="w-5 h-5">{icon}</div>
       <span className="text-xs">{label}</span>
