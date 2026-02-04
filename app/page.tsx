@@ -219,7 +219,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-20 bg-neutral-950 border-b border-neutral-800">
         <div className="px-4 py-3">
-          <h1 className="text-lg font-semibold">LEVELS TECH SERVICES</h1>
+          <h1 className="text-lg font-semibold">Bei Kitonga PC Market</h1>
           <div className="mt-3 flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded-2xl px-3 py-2">
             <Search className="w-4 h-4 text-neutral-400" />
             <input
