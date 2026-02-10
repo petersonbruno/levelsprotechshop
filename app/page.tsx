@@ -77,7 +77,6 @@ type DashboardSubView = "main" | "view-products" | "add-product";
 export default function HomePage() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [selected, setSelected] = useState<Product | null>(null);
   const [currentView, setCurrentView] = useState<View>("home");
   const [previousView, setPreviousView] = useState<View>("home");
   const [products, setProducts] = useState<Product[]>([]);
@@ -138,16 +137,6 @@ export default function HomePage() {
     }
   };
 
-  const handleProductClick = (product: Product) => {
-    setSelected(product);
-    setPreviousView(currentView);
-    setCurrentView("details");
-  };
-
-  const handleBackToHome = () => {
-    setSelected(null);
-    setCurrentView(previousView);
-  };
 
   if (currentView === "shop") {
     const shopFiltered = products.filter((p) => {
@@ -163,7 +152,6 @@ export default function HomePage() {
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
         filtered={shopFiltered}
-        onProductClick={handleProductClick}
         onNavClick={(view) => setCurrentView(view)}
       />
     );
@@ -208,24 +196,6 @@ export default function HomePage() {
         onCategoryChange={(category) => {
           setActiveCategory(category);
           setCurrentView("home");
-          setQuery("");
-        }}
-      />
-    );
-  }
-
-  if (currentView === "details" && selected) {
-    return (
-      <ProductDetails
-        product={selected}
-        onBack={handleBackToHome}
-        onNavClick={(view) => {
-          setCurrentView(view);
-          setPreviousView(view);
-        }}
-        onCategoryChange={(category) => {
-          setActiveCategory(category);
-          setCurrentView(previousView);
           setQuery("");
         }}
       />
@@ -308,11 +278,10 @@ export default function HomePage() {
               </div>
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {popularProducts.map((p) => (
-                  <motion.div
+                  <Link
                     key={p.id}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => handleProductClick(p)}
-                    className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden cursor-pointer"
+                    href={`/product/${p.id}`}
+                    className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden hover:border-green-600 transition-colors"
                   >
                     <div className="relative h-40 w-full bg-neutral-800">
                       {p.image_urls && p.image_urls.length > 0 ? (
@@ -338,7 +307,7 @@ export default function HomePage() {
                       <h3 className="text-sm font-medium line-clamp-2 mb-3">{p.name}</h3>
                       <p className="text-base font-bold text-green-400">{p.price}</p>
                     </div>
-                  </motion.div>
+                  </Link>
                 ))}
               </div>
             </>
@@ -602,6 +571,7 @@ function ProductDetails({
                     }`}
                 />
               ))}
+              
             </div>
           )}
 
@@ -675,7 +645,6 @@ function ShopPage({
   activeCategory,
   setActiveCategory,
   filtered,
-  onProductClick,
   onNavClick
 }: {
   query: string;
@@ -683,7 +652,6 @@ function ShopPage({
   activeCategory: string;
   setActiveCategory: (category: string) => void;
   filtered: Product[];
-  onProductClick: (product: Product) => void;
   onNavClick: (view: View) => void;
 }) {
   return (
@@ -747,11 +715,10 @@ function ShopPage({
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {filtered.map((p) => (
-              <motion.div
+              <Link
                 key={p.id}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => onProductClick(p)}
-                className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden cursor-pointer"
+                href={`/product/${p.id}`}
+                className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden hover:border-green-600 transition-colors"
               >
                 <div className="relative h-28 w-full">
                   {p.image_urls && p.image_urls.length > 0 ? (
@@ -775,7 +742,7 @@ function ShopPage({
                   <p className="text-xs text-neutral-400 mt-1">{p.category}</p>
                   <p className="text-sm font-semibold mt-2">{p.price}</p>
                 </div>
-              </motion.div>
+              </Link>
             ))}
           </div>
         )}

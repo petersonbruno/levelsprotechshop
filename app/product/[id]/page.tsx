@@ -85,7 +85,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       <div className="p-4 text-sm"><Link href="/" className="text-green-500">← Back</Link></div>
 
-      <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full px-4 pb-24">
+      <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full px-4 pb-40">
         <div className="w-full mb-6">
           <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-pointer" onClick={() => setIsFullScreen(true)}>
             {product.image_urls && product.image_urls.length > 0 ? (

@@ -12,7 +12,6 @@ type Product = ApiProduct;
 export default function CategoryPage({ params }: { params: Promise<{ name: string }> | { name: string } }) {
   const resolvedParams = (React as any).use(params) as { name?: string };
   const name = decodeURIComponent(resolvedParams?.name || "");
-  const [selected, setSelected] = useState<Product | null>(null);
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -126,7 +125,7 @@ export default function CategoryPage({ params }: { params: Promise<{ name: strin
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {filtered.map((p) => (
-              <button key={p.id} onClick={() => setSelected(p)} className="text-left rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden">
+              <Link key={p.id} href={`/product/${p.id}`} className="text-left rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden hover:border-green-600 transition-colors">
                 <div className="relative h-28 w-full bg-neutral-800">
                   {p.image_urls && p.image_urls.length > 0 ? (
                     <Image
@@ -147,15 +146,11 @@ export default function CategoryPage({ params }: { params: Promise<{ name: strin
                   <p className="text-xs text-neutral-400 mt-1">{p.category}</p>
                   <p className="text-sm font-semibold mt-2">{p.price}</p>
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         )}
       </main>
-      
-      {selected && (
-        <ProductDetails product={selected} onBack={() => setSelected(null)} />
-      )}
     </div>
   );
 }
@@ -200,79 +195,4 @@ function waLink(p: Product) {
   return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
 }
 
-function ProductDetails({ product, onBack }: { product: Product; onBack: () => void }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isFullScreen, setIsFullScreen] = useState(false);
 
-  const handleNextImage = (e: React.MouseEvent) => { e.stopPropagation(); const imageCount = product.image_urls?.length || 0; if (imageCount > 0) setCurrentImageIndex((prev) => (prev + 1) % imageCount); };
-  const handlePrevImage = (e: React.MouseEvent) => { e.stopPropagation(); const imageCount = product.image_urls?.length || 0; if (imageCount > 0) setCurrentImageIndex((prev) => (prev - 1 + imageCount) % imageCount); };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black/95 flex flex-col" onClick={() => onBack()}>
-      <button onClick={(e) => { e.stopPropagation(); onBack(); }} className="absolute top-4 left-4 z-10 text-green-500">← Back</button>
-      <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full px-4 py-20" onClick={(e) => e.stopPropagation()}>
-        <div className="w-full mb-6">
-          <div className="relative w-full h-80 rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-pointer" onClick={() => setIsFullScreen(true)}>
-            {product.image_urls && product.image_urls.length > 0 ? (
-              <Image src={normalizeImageUrl(product.image_urls[currentImageIndex])} alt={product.name} fill className="object-contain" sizes="(max-width: 768px) 100vw, 800px" unoptimized={shouldUnoptimizeImage(product.image_urls[currentImageIndex])} onError={handleImageError} />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-16 h-16 text-neutral-600" /></div>
-            )}
-          </div>
-
-          {product.image_urls && product.image_urls.length > 1 && (
-            <div className="flex gap-2 mt-4 overflow-x-auto">
-              {product.image_urls.map((img, i) => (
-                <button key={i} onClick={() => setCurrentImageIndex(i)} className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 ${currentImageIndex === i ? "border-green-600" : "border-neutral-800"}`}>
-                  <Image src={normalizeImageUrl(img)} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="80px" unoptimized={shouldUnoptimizeImage(img)} onError={handleImageError} />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="w-full space-y-4 text-center">
-          <h2 className="text-2xl font-semibold">{product.name}</h2>
-          <p className="text-2xl font-bold text-green-500">{product.price}</p>
-
-          <div className="text-left">
-            <h3 className="text-sm font-semibold mb-2 text-neutral-300">Specifications</h3>
-            <ul className="text-sm text-neutral-400 space-y-2">
-              {product.specs?.map((s) => (<li key={s} className="flex items-center gap-2"><span className="text-green-500">•</span><span>{s}</span></li>))}
-            </ul>
-          </div>
-
-          <div className="text-sm pt-2"><span className="text-neutral-300">Warranty: </span><span className="text-neutral-400">{product.warranty}</span></div>
-        </div>
-
-        <a href={waLink(product)} target="_blank" rel="noopener noreferrer" className="fixed bottom-20 left-4 right-4 bg-green-600 text-center py-3 rounded-2xl font-semibold hover:bg-green-700 transition-colors text-white">
-          <span className="inline-flex items-center justify-center gap-2"><WhatsAppIcon className="w-5 h-5 text-white" /><span>Order on WhatsApp</span></span>
-        </a>
-
-        {isFullScreen && (
-          <div className="fixed inset-0 z-50 bg-black/95 flex flex-col" onClick={() => setIsFullScreen(false)}>
-            <button onClick={() => setIsFullScreen(false)} className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-neutral-800/80 hover:bg-neutral-700 flex items-center justify-center transition-colors"><X className="w-5 h-5 text-white" /></button>
-            <div className="flex-1 flex items-center justify-center relative px-4 py-20">
-              {product.image_urls && product.image_urls.length > 1 && (
-                <button onClick={handlePrevImage} className="absolute left-4 z-10 w-12 h-12 rounded-full bg-neutral-800/80 hover:bg-neutral-700 flex items-center justify-center transition-colors"><ChevronLeft className="w-6 h-6 text-white" /></button>
-              )}
-              <div className="relative w-full h-full max-w-4xl max-h-[70vh]" onClick={(e) => e.stopPropagation()}>
-                {product.image_urls && product.image_urls.length > 0 ? (
-                  <Image src={normalizeImageUrl(product.image_urls[currentImageIndex])} alt={`${product.name} - Image ${currentImageIndex + 1}`} fill className="object-contain" sizes="100vw" unoptimized={shouldUnoptimizeImage(product.image_urls[currentImageIndex])} onError={handleImageError} />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center" />
-                )}
-              </div>
-              {product.image_urls && product.image_urls.length > 1 && (
-                <button onClick={handleNextImage} className="absolute right-4 z-10 w-12 h-12 rounded-full bg-neutral-800/80 hover:bg-neutral-700 flex items-center justify-center transition-colors"><ChevronRight className="w-6 h-6 text-white" /></button>
-              )}
-            </div>
-            <div className="px-4 pb-8" onClick={(e) => e.stopPropagation()}>
-              <a href={waLink(product)} target="_blank" rel="noopener noreferrer" className="block w-full bg-green-600 text-center py-4 rounded-2xl font-semibold hover:bg-green-700 transition-colors text-white"><span className="inline-flex items-center justify-center gap-2"><WhatsAppIcon className="w-5 h-5 text-white" /><span>Order Now</span></span></a>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
