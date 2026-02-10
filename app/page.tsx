@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { fetchProducts, fetchDashboard, createProduct, updateProduct, deleteProduct, normalizeImageUrl, type ApiProduct } from "@/lib/api";
 import { login, logout, isAuthenticated } from "@/lib/auth";
+import { useTrendingProducts } from "@/lib/hooks";
 
 // WhatsApp number — prefer runtime env (exposed to client) then fallback
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP || "255674373436";
@@ -80,10 +81,12 @@ export default function HomePage() {
   const [currentView, setCurrentView] = useState<View>("home");
   const [previousView, setPreviousView] = useState<View>("home");
   const [products, setProducts] = useState<Product[]>([]);
-  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Use trending products hook for caching
+  const { products: popularProducts, loading: trendingLoading } = useTrendingProducts();
 
   // Check authentication status on mount
   useEffect(() => {
@@ -100,13 +103,6 @@ export default function HomePage() {
         // Fetch all products
         const fetchedProducts = await fetchProducts();
         setProducts(fetchedProducts);
-
-        // Fetch trending products (up to 6)
-        const trendingProducts = await fetchProducts({
-          trending: true,
-          limit: 6
-        });
-        setPopularProducts(trendingProducts);
       } catch (err) {
         console.error("Error loading products:", err);
         setError(err instanceof Error ? err.message : "Failed to load products");

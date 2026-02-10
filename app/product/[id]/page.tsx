@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { fetchProduct, normalizeImageUrl, type ApiProduct } from "@/lib/api";
+import { normalizeImageUrl, type ApiProduct } from "@/lib/api";
+import { useProduct } from "@/lib/hooks";
 
 function shouldUnoptimizeImage(url?: string | null) {
   if (!url) return false;
@@ -49,35 +50,11 @@ function waLink(product: ApiProduct) {
 export default function ProductPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
   const resolved = (React as any).use(params) as { id?: string };
   const id = resolved?.id || "";
-  const [product, setProduct] = useState<ApiProduct | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { product, isLoading, error } = useProduct(id);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        setLoading(true);
-        const p = await fetchProduct(id);
-        if (!mounted) return;
-        setProduct(p);
-      } catch (err) {
-        if (!mounted) return;
-        setError(err instanceof Error ? err.message : String(err));
-      } finally {
-        if (!mounted) return;
-        setLoading(false);
-      }
-    }
-    if (id) load();
-    return () => {
-      mounted = false;
-    };
-  }, [id]);
-
-  if (loading) return <div className="flex-1 flex items-center justify-center p-6"><p className="text-neutral-400">Loading...</p></div>;
+  if (isLoading) return <div className="flex-1 flex items-center justify-center p-6"><p className="text-neutral-400">Loading...</p></div>;
   if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
   if (!product) return <div className="p-6">Product not found</div>;
 
