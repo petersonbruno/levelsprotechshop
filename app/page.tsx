@@ -18,7 +18,7 @@ const categories = [
   { name: "Gaming PCs", icon: Gamepad2 },
   { name: "Accessories", icon: Headphones },
   { name: "Electronics", icon: Zap },
-  { name: "SmartPhones", icon: Smartphone },
+  { name: "Phones", icon: Smartphone },
 ];
 
 type Product = ApiProduct;
