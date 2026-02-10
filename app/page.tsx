@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Home, Laptop, Gamepad2, ShoppingBag, User, Search, Phone, Mail, MapPin, Monitor, Headphones, Grid3x3, TrendingUp, X, ChevronLeft, ChevronRight, Plus, Settings, Trash2, Upload, Image as ImageIcon, Lock, LogOut, Eye, Zap } from "lucide-react";
+import { Home, Laptop, Gamepad2, ShoppingBag, User, Search, Phone, Mail, MapPin, Monitor, Headphones, Grid3x3, TrendingUp, X, ChevronLeft, ChevronRight, Plus, Settings, Trash2, Upload, Image as ImageIcon, Lock, LogOut, Eye, Zap, Smartphone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchProducts, fetchDashboard, createProduct, updateProduct, deleteProduct, normalizeImageUrl, type ApiProduct } from "@/lib/api";
@@ -18,7 +18,7 @@ const categories = [
   { name: "Gaming PCs", icon: Gamepad2 },
   { name: "Accessories", icon: Headphones },
   { name: "Electronics", icon: Zap },
-  { name: "Phone", icon: Phone },
+  { name: "SmartPhones", icon: Smartphone },
 ];
 
 type Product = ApiProduct;
